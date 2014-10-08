@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
-using System.Collections.Generic
+using System.Collections.Generic;
 
 public class GameStarter : MonoBehaviour{
 
@@ -17,12 +17,12 @@ public class GameStarter : MonoBehaviour{
 		GameObject playerGo=  Instantiate(playerPrefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
 		Player player = playerGo.GetComponent<Player>();
 		
-		GameObject shipPrefab=  Instantiate(shipPrefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
-		ControlledObject[] allObjects = shipPrefab.GetComponentsInChildren<ControlledObject>();
+		GameObject shipGo=  Instantiate(shipPrefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+        ControlledObject[] allObjects = shipGo.GetComponentsInChildren<ControlledObject>();
 		foreach(ControlledObject obj in allObjects){
 			player.InitObj(obj);
 		}
-		
+        player.myShip = shipGo.GetComponent<Ship>();
 	}
 	
 

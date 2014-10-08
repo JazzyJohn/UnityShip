@@ -5,13 +5,15 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class InputManager{
+public class InputManager {
 
 	
 	private   Dictionary<String, KeyCode> keyMap  = new Dictionary<String, KeyCode> ();
 	private   float mouseSensitivity = 1.0f;
 	private static string MOUSESENSITIVITY ="mouseSensitivity";
 	
+
+
 	public InputManager(){
 		XmlDocument xmlDoc = new XmlDocument();
 		xmlDoc.LoadXml(SettingsManager.instance.configTable.text);

@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FirstPersonCamera : PlayerCamera {
+public class FirstPersonCamera : MonoBehaviour{
 
 
 	public enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }
+
+    Transform cameraTransform;
+    Transform _target;
 	public RotationAxes axes = RotationAxes.MouseXAndY;
 	public float sensitivityX = 15F;
 	public float sensitivityY = 15F;
@@ -34,7 +37,7 @@ public class FirstPersonCamera : PlayerCamera {
         //minimapTransform = GameObject.FindGameObjectWithTag ("MinimapCamera").GetComponent<Transform> ();
         //minimapCamera = minimapTransform.camera;
         _target = transform;
-        _pawn = GetComponent<Pawn>();
+      
         
         //TODO: Learn about wtf this do here
         //EventHolder.instance.Bind (this);
@@ -43,8 +46,7 @@ public class FirstPersonCamera : PlayerCamera {
 
 	void Update ()
 	{
-        if (PlayerMainGui.IsMouseAV)
-        {
+
             if (axes == RotationAxes.MouseXAndY)
             {
                 // Read the mouse input axis
@@ -57,7 +59,7 @@ public class FirstPersonCamera : PlayerCamera {
                 Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
                 Quaternion yQuaternion = Quaternion.AngleAxis(rotationY, Vector3.left);
 
-                cameraTransform.rotation = originalRotation * xQuaternion * yQuaternion;
+                cameraTransform.rotation = transform.rotation * originalRotation * xQuaternion * yQuaternion;
             }
             else if (axes == RotationAxes.MouseX)
             {
@@ -65,7 +67,7 @@ public class FirstPersonCamera : PlayerCamera {
                 rotationX = ClampAngle(rotationX, minimumX, maximumX);
 
                 Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
-                cameraTransform.rotation = originalRotation * xQuaternion;
+                cameraTransform.rotation = transform.rotation * originalRotation * xQuaternion;
             }
             else
             {
@@ -73,12 +75,12 @@ public class FirstPersonCamera : PlayerCamera {
                 rotationY = ClampAngle(rotationY, minimumY, maximumY);
 
                 Quaternion yQuaternion = Quaternion.AngleAxis(rotationY, Vector3.left);
-                cameraTransform.rotation = originalRotation * yQuaternion;
+                cameraTransform.rotation =transform.rotation* originalRotation * yQuaternion;
             }
        
-        }
-        Vector3 targetHead = _target.position + cameraTransform.rotation * normalOffset;
-        cameraTransform.position = targetHead;
+        
+       
+        cameraTransform.position = _target.position;
 	}
 	
 	void Start ()

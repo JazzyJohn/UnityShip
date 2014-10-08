@@ -12,6 +12,8 @@ public interface Controller{
 	float GetPitchSpeed();
 	
 	Vector3 GetLookTarget();
-	
-	void Init(ControlledObject obj);
+
+    bool IsFullStop();
+    
+	void InitObj(ControlledObject obj);
 }
