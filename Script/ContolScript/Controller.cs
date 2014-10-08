@@ -4,6 +4,8 @@ using System;
 public interface Controller{
 
 	float GetForwardThrottle();
+	
+	float GetDiveThrottle();
 
 	float GetRollSpeed();
 	

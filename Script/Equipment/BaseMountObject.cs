@@ -29,6 +29,9 @@ public class BaseMountObject : ControlledObject{
 
 		
 	protected void FixedUpdate(){
+		if(controller==null){
+			return;
+		}
 		if(underControl){
 			Vector3 target  = controller.GetLookTarget();
             Quaternion newRotation = Quaternion.LookRotation(target - mTransform.position);
@@ -46,11 +49,11 @@ public class BaseMountObject : ControlledObject{
             mTransform.localRotation = Quaternion.Slerp(oldRotation, Quaternion.Euler(euler), Time.fixedDeltaTime * rotateSpeed);
             /*
 
-          Quaternion yawQuaternion = Quaternion.AngleAxis(newRotation.eulerAngles.y, Vector3.up);
-         Quaternion pitchQuaternion = Quaternion.AngleAxis(newRotation.eulerAngles.x, Vector3.left);
-         Quaternion rollQuat = Quaternion.AngleAxis(newRotation.eulerAngles.z, Vector3.right);
-         newRotation = pitchQuaternion * yawQuaternion * rollQuat;
-          mTransform.localRotation = Quaternion.Slerp(mTransform.localRotation, newRotation, Time.fixedDeltaTime * rotateSpeed);*/
+			Quaternion yawQuaternion = Quaternion.AngleAxis(newRotation.eulerAngles.y, Vector3.up);
+			Quaternion pitchQuaternion = Quaternion.AngleAxis(newRotation.eulerAngles.x, Vector3.left);
+			Quaternion rollQuat = Quaternion.AngleAxis(newRotation.eulerAngles.z, Vector3.right);
+			newRotation = pitchQuaternion * yawQuaternion * rollQuat;
+			mTransform.localRotation = Quaternion.Slerp(mTransform.localRotation, newRotation, Time.fixedDeltaTime * rotateSpeed);*/
         }
 	}
 	public static float ClampAngle (float angle, float min, float max)
@@ -72,7 +75,10 @@ public class BaseMountObject : ControlledObject{
 	public void ToggleControl(){
 		underControl= !underControl;
 	}
-	public void Activate(){
+	public virtual void Activate(){
 	
+	}
+	public virtual bool CanActivate(){
+		return underControl;
 	}
 }

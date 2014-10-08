@@ -10,6 +10,8 @@ public class EngineGui : MonoBehaviour {
     public UILabel yaw;
 
     public UILabel pitch;
+	
+	public UILabel dive;
 
     public Engine engine;
     public void SetEngine(Engine engine)
@@ -31,6 +33,7 @@ public class EngineGui : MonoBehaviour {
             roll.text = engine.Roll.ToString("0.0");
             yaw.text = engine.Yaw.ToString("0.0");
             pitch.text = engine.Pitch.ToString("0.0");
+			dive.text = engine.Dive.ToString("0.0");
         }
 	}
 }

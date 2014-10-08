@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FirstPersonCamera : MonoBehaviour{
+public class FirstPersonCamera : PlayerCamera{
 
 
 	public enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }

@@ -15,6 +15,12 @@ public class Engine : ControlledObject{
 
     private bool stopingThrottle=false;
 	
+	private float diveThrottle;
+
+    public float Dive { get { return diveThrottle; } }
+
+    private bool stopingDive=false;	
+	
 	private float rollSpeed;
 
     public float Roll { get { return rollSpeed; } }
@@ -35,6 +41,8 @@ public class Engine : ControlledObject{
 	
 	private float deltaForwardThrottle;
 	
+	private float deltaDiveThrottle;
+	
 	private float deltaRollSpeed;
 	
 	private float deltaYawSpeed;
@@ -46,6 +54,10 @@ public class Engine : ControlledObject{
 	public float maxBackwardThrottle;
 	
 	public float throttleStep;
+	
+	public float maxDiveThrottle;
+	
+	public float diveStep;
 	
 	public float maxYawSpeed;
 	
@@ -68,12 +80,16 @@ public class Engine : ControlledObject{
 	}
 	
 	void FixedUpdate(){
+		if(controller==null){
+			return;
+		}
         if (controller.IsFullStop())
         {
             stopingPitch = true;
             stopingRoll = true;
             stopingYaw = true;
             stopingThrottle = true;
+			stopingDive = true;
         }
         else
         {
@@ -95,12 +111,38 @@ public class Engine : ControlledObject{
                
             }
             Vector3 forward = Vector3.forward * Mathf.Clamp(forwardThrottle, maxBackwardThrottle, maxForwardThrottle);
-            if (force.relativeForce != forward)
+			if (force.relativeForce != forward)
             {
                 force.relativeForce = forward;
             }
 
-              Quaternion summaryRoattion  = Quaternion.identity;
+			
+			deltaDiveThrottle = controller.GetForwardThrottle();
+            if (deltaDiveThrottle == 0 && stopingDive)
+            {
+                float sign =Mathf.Sign(diveThrottle);
+                deltaDiveThrottle  =-  sign* throttleStep;
+                diveThrottle += deltaDiveThrottle * Time.fixedDeltaTime;
+                if (Mathf.Sign(diveThrottle)!=sign)
+                {
+                    diveThrottle = 0;
+                }
+
+            }else{
+                stopingDive = false;
+                deltaDiveThrottle *= throttleStep;
+                diveThrottle += deltaDiveThrottle * Time.fixedDeltaTime;
+               
+            }
+			
+			Vector3 up = Vector3.up * Mathf.Clamp(diveThrottle, -maxDiveThrottle, maxDiveThrottle);
+			if (force.force != up)
+            {
+                force.force = up;
+            }
+			
+          
+             Quaternion summaryRoattion  = Quaternion.identity;
 
             deltaRollSpeed = controller.GetRollSpeed();
             if (deltaRollSpeed == 0 && stopingRoll)

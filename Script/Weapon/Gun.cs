@@ -12,6 +12,14 @@ public class Gun : BaseMountObject{
 	public float fireInterval;
 	
 	public float reloadTime;
+	
+	float _reloadTime;
+	
+	float _fireTimer;
+	
+	bool reloading;
+	
+	bool firing;
 
     public LineRenderer render;
     protected void FixedUpdate()
@@ -21,4 +29,10 @@ public class Gun : BaseMountObject{
         render.SetPosition(1, mTransform.position + mTransform.forward * 100);
 
     }
+	public override void Activate(){
+		
+	}
+	public override bool CanActivate(){
+		return base.CanActivate()&&!reloading&&!firing&&_fireTimer<0;
+	}
 }

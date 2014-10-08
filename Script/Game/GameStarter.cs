@@ -18,11 +18,8 @@ public class GameStarter : MonoBehaviour{
 		Player player = playerGo.GetComponent<Player>();
 		
 		GameObject shipGo=  Instantiate(shipPrefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
-        ControlledObject[] allObjects = shipGo.GetComponentsInChildren<ControlledObject>();
-		foreach(ControlledObject obj in allObjects){
-			player.InitObj(obj);
-		}
-        player.myShip = shipGo.GetComponent<Ship>();
+    	player.InitRole( shipGo.GetComponent<Ship>());
+		
 	}
 	
 
