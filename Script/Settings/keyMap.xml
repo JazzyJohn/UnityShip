@@ -4,5 +4,20 @@
 		<name>FullStop</name>
 		<default>Space</default>
 	</keys>
-
+  <keys>
+    <name>Activate</name>
+    <default>Mouse0</default>
+  </keys>
+  <keys>
+    <name>NextCamera</name>
+    <default>Equals</default>
+  </keys>
+  <keys>
+    <name>PrevCamera</name>
+    <default>Minus</default>
+  </keys>
+  <keys>
+    <name>Nextrole</name>
+    <default>T</default>
+  </keys>
 </input>

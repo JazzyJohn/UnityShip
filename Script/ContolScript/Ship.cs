@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 public class Ship : MonoBehaviour {
 
 	// Use this for initialization
@@ -16,39 +16,39 @@ public class Ship : MonoBehaviour {
 	
 	public Player engineer { 
 		get {
-			if(crew.Containskey(ROLETYPE.ENGINEER){
+			if(crew.ContainsKey(ROLETYPE.ENGINEER)){
 				return crew[ROLETYPE.ENGINEER];
 			}
 			return null;
 		}
-	};
+	}
 	
 	public Player pilot{ 
 		get {
-			if(crew.Containskey(ROLETYPE.PILOT){
+			if(crew.ContainsKey(ROLETYPE.PILOT)){
 				return crew[ROLETYPE.PILOT];
 			}
 			return null;
 		}
-	};
+	}
 	
 	public Player shooter{ 
 		get {
-			if(crew.Containskey(ROLETYPE.SHOOTER){
+			if(crew.ContainsKey(ROLETYPE.SHOOTER)){
 				return crew[ROLETYPE.SHOOTER];
 			}
 			return null;
 		}
-	};
+	}
 	
 	public Player navigator{ 
 		get {
-			if(crew.Containskey(ROLETYPE.NAVIGATOR){
+			if(crew.ContainsKey(ROLETYPE.NAVIGATOR)){
 				return crew[ROLETYPE.NAVIGATOR];
 			}
 			return null;
 		}
-	};
+	}
 
     void Awake()
     {
@@ -72,17 +72,18 @@ public class Ship : MonoBehaviour {
 			crew[ROLETYPE.ENGINEER] = newCrewman;
 			return ROLETYPE.ENGINEER;
 		}
+        return  ROLETYPE.SHOOTER;
 	}
 	public ROLETYPE NextRole(Player newCrewman){
 		
 		int i = (int)newCrewman.role +1;
 		while(true){
 			if(i==2 &&!isEngineerSlot){
-				i++
+				i++;
 				continue;
 			}
 			if(i==3 &&!isNavigatorSlot){
-				i++
+				i++;
 				continue;
 			}
 			if(i>=4){
@@ -90,7 +91,7 @@ public class Ship : MonoBehaviour {
 				
 			}
 			if(crew.ContainsKey((ROLETYPE)i)){
-				if(crew[(ROLETYPE)i)]==newCrewman){
+				if(crew[(ROLETYPE)i]==newCrewman){
 					return newCrewman.role;
 				}
 				i++;

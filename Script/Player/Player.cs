@@ -28,7 +28,7 @@ public class Player : MonoBehaviour,Controller{
 			NextRole();
 		}
 		if(InputManager.instance.GetButtonDown("NextCamera")){
-			NextRole();
+			NextCamera();
 		}
 		if(InputManager.instance.GetButtonDown("PrevCamera")){
 			PrevCamera();
@@ -83,9 +83,11 @@ public class Player : MonoBehaviour,Controller{
 				InitObj(obj);
 			}
 		}
-		allRoleCamera[curCamera].enabled= false;
-		
-		allRoleCamera =mysShip.GetCamerasForRole(role);
+        if (allRoleCamera.Count > 0)
+        {
+            allRoleCamera[curCamera].enabled = false;
+        }
+		allRoleCamera =myShip.GetCamerasForRole(role);
 		curCamera=0;
 		allRoleCamera[curCamera].enabled =true;
 	}
@@ -111,7 +113,7 @@ public class Player : MonoBehaviour,Controller{
 		
 	}
 	public void NextRole(){
-		ROLETYPE newrole = ship.NextRole(this);
+		ROLETYPE newrole = myShip.NextRole(this);
 		if(newrole!=role){
 			role =newrole;
 			SwitchRole();

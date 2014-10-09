@@ -78,135 +78,167 @@ public class Engine : ControlledObject{
         myTransform = mRigidBody.transform;
         FindObjectOfType<EngineGui>().SetEngine(this);  
 	}
-	
-	void FixedUpdate(){
-		if(controller==null){
-			return;
-		}
-        if (controller.IsFullStop())
+    void Update()
+    {
+        if (controller!=null&&controller.IsFullStop())
         {
             stopingPitch = true;
             stopingRoll = true;
             stopingYaw = true;
             stopingThrottle = true;
-			stopingDive = true;
+            stopingDive = true;
         }
-        else
+    }
+	
+	void FixedUpdate(){
+		if(controller==null){
+            ApplyMovemment();
+			return;
+		}
+       
+       
+        if (maxBackwardThrottle != 0 && maxForwardThrottle != 0)
         {
             deltaForwardThrottle = controller.GetForwardThrottle();
             if (deltaForwardThrottle == 0 && stopingThrottle)
             {
-                float sign =Mathf.Sign(forwardThrottle);
-                deltaForwardThrottle  =-  sign* throttleStep;
+                float sign = Mathf.Sign(forwardThrottle);
+                deltaForwardThrottle = -sign * throttleStep;
                 forwardThrottle += deltaForwardThrottle * Time.fixedDeltaTime;
-                if (Mathf.Sign(forwardThrottle)!=sign)
+                if (Mathf.Sign(forwardThrottle) != sign)
                 {
                     forwardThrottle = 0;
                 }
 
-            }else{
+            }
+            else
+            {
                 stopingThrottle = false;
                 deltaForwardThrottle *= throttleStep;
                 forwardThrottle += deltaForwardThrottle * Time.fixedDeltaTime;
-               
-            }
-            Vector3 forward = Vector3.forward * Mathf.Clamp(forwardThrottle, maxBackwardThrottle, maxForwardThrottle);
-			if (force.relativeForce != forward)
-            {
-                force.relativeForce = forward;
-            }
 
-			
-			deltaDiveThrottle = controller.GetForwardThrottle();
+            }
+            forwardThrottle = Mathf.Clamp(forwardThrottle, maxBackwardThrottle, maxForwardThrottle);
+               
+        }
+        if (maxDiveThrottle != 0)
+        {
+            deltaDiveThrottle = controller.GetDiveThrottle();
             if (deltaDiveThrottle == 0 && stopingDive)
             {
-                float sign =Mathf.Sign(diveThrottle);
-                deltaDiveThrottle  =-  sign* throttleStep;
+                float sign = Mathf.Sign(diveThrottle);
+                deltaDiveThrottle = -sign * throttleStep;
                 diveThrottle += deltaDiveThrottle * Time.fixedDeltaTime;
-                if (Mathf.Sign(diveThrottle)!=sign)
+                if (Mathf.Sign(diveThrottle) != sign)
                 {
                     diveThrottle = 0;
                 }
 
-            }else{
+            }
+            else
+            {
                 stopingDive = false;
                 deltaDiveThrottle *= throttleStep;
                 diveThrottle += deltaDiveThrottle * Time.fixedDeltaTime;
+
+            }
+            diveThrottle = Mathf.Clamp(diveThrottle, -maxDiveThrottle, maxDiveThrottle);
+               
+
+        }
+            
+            if (maxRollSpeed != 0)
+            {
+                deltaRollSpeed = controller.GetRollSpeed();
+                if (deltaRollSpeed == 0 && stopingRoll)
+                {
+                    float sign = Mathf.Sign(rollSpeed);
+                    deltaRollSpeed = -sign * rollStep;
+                    rollSpeed += deltaRollSpeed * Time.fixedDeltaTime;
+                    if (Mathf.Sign(rollSpeed) != sign)
+                    {
+                        rollSpeed = 0;
+                    }
+                }
+                else
+                {
+                    stopingRoll = false;
+                    deltaRollSpeed *= rollStep;
+                    rollSpeed += deltaRollSpeed * Time.fixedDeltaTime;
+                }
+                rollSpeed = Mathf.Clamp(rollSpeed, -maxRollSpeed, maxRollSpeed);
+             
+
+            }
+            if (maxYawSpeed != 0)
+            {
+                deltaYawSpeed = controller.GetYawSpeed();
+                if (deltaYawSpeed == 0 && stopingYaw)
+                {
+                    float sign = Mathf.Sign(rollSpeed);
+                    deltaYawSpeed = -sign * yawStep;
+                    yawSpeed += deltaYawSpeed * Time.fixedDeltaTime;
+                    if (Mathf.Sign(yawSpeed) != sign)
+                    {
+                        yawSpeed = 0;
+                    }
+                }
+                else
+                {
+                    stopingYaw = false;
+                    deltaYawSpeed *= yawStep;
+                    yawSpeed += deltaYawSpeed * Time.fixedDeltaTime;
+                }
+                yawSpeed = Mathf.Clamp(yawSpeed, -maxYawSpeed, maxYawSpeed);
                
             }
-			
-			Vector3 up = Vector3.up * Mathf.Clamp(diveThrottle, -maxDiveThrottle, maxDiveThrottle);
-			if (force.force != up)
+            if (maxPitchSpeed != 0)
             {
-                force.force = up;
-            }
-			
-          
-             Quaternion summaryRoattion  = Quaternion.identity;
-
-            deltaRollSpeed = controller.GetRollSpeed();
-            if (deltaRollSpeed == 0 && stopingRoll)
-            {
-                float sign = Mathf.Sign(rollSpeed);
-                deltaRollSpeed = -sign * rollStep;
-                rollSpeed += deltaRollSpeed * Time.fixedDeltaTime;
-                if (Mathf.Sign(rollSpeed) != sign)
+                deltaPitchSpeed = controller.GetPitchSpeed();
+                if (deltaPitchSpeed == 0 && stopingPitch)
                 {
-                    rollSpeed = 0;
+                    float sign = Mathf.Sign(pitchSpeed);
+                    deltaPitchSpeed = -sign * pitchStep;
+                    pitchSpeed += deltaPitchSpeed * Time.fixedDeltaTime;
+                    if (Mathf.Sign(pitchSpeed) != sign)
+                    {
+                        pitchSpeed = 0;
+                    }
                 }
-            }
-            else {
-                stopingRoll = false;
-                deltaRollSpeed *= rollStep;
-                rollSpeed += deltaRollSpeed * Time.fixedDeltaTime;
-            }
-            summaryRoattion *= Quaternion.AngleAxis(Mathf.Clamp(rollSpeed, -maxRollSpeed, maxRollSpeed), Vector3.forward);
-
-
-
-            deltaYawSpeed = controller.GetYawSpeed();
-            if (deltaYawSpeed == 0 && stopingYaw)
-            {
-                float sign = Mathf.Sign(rollSpeed);
-                deltaYawSpeed = -sign * yawStep;
-                yawSpeed += deltaYawSpeed * Time.fixedDeltaTime;
-                if (Mathf.Sign(yawSpeed) != sign)
+                else
                 {
-                    yawSpeed = 0;
+                    stopingPitch = false;
+                    deltaPitchSpeed *= pitchStep;
+                    pitchSpeed += deltaPitchSpeed * Time.fixedDeltaTime;
                 }
+                pitchSpeed = Mathf.Clamp(pitchSpeed, -maxPitchSpeed, maxPitchSpeed);
+               
             }
-            else
-            {
-                stopingYaw = false;
-                deltaYawSpeed *= yawStep;
-                yawSpeed += deltaYawSpeed * Time.fixedDeltaTime;
-            }
-            summaryRoattion *= Quaternion.AngleAxis(Mathf.Clamp(yawSpeed, -maxYawSpeed, maxYawSpeed), Vector3.up);
-
-            deltaPitchSpeed = controller.GetPitchSpeed();
-            if (deltaPitchSpeed == 0 && stopingPitch)
-            {
-                float sign = Mathf.Sign(pitchSpeed);
-                deltaPitchSpeed = -sign * pitchStep;
-                pitchSpeed += deltaPitchSpeed * Time.fixedDeltaTime;
-                if (Mathf.Sign(pitchSpeed) != sign)
-                {
-                    pitchSpeed = 0;
-                }
-            }
-            else
-            {
-                stopingPitch = false;
-                deltaPitchSpeed *= pitchStep;
-                pitchSpeed += deltaPitchSpeed * Time.fixedDeltaTime;
-            }
-            summaryRoattion *= Quaternion.AngleAxis(Mathf.Clamp(pitchSpeed, -maxPitchSpeed, maxPitchSpeed), Vector3.right);
-            myTransform.rotation *= summaryRoattion;
+            ApplyMovemment();
            
-        }
+        
 		
 			
 		
 	}
+
+    public void ApplyMovemment()
+    {
+        Vector3 forward = Vector3.forward * forwardThrottle;
+        if (force.relativeForce != forward)
+        {
+            force.relativeForce = forward;
+        }
+        Vector3 up = Vector3.up * diveThrottle;
+        if (force.force != up)
+        {
+            force.force = up;
+        }
+        Quaternion summaryRoattion = Quaternion.identity;
+        summaryRoattion *= Quaternion.AngleAxis(rollSpeed, Vector3.forward);
+        summaryRoattion *= Quaternion.AngleAxis(yawSpeed, Vector3.up);
+        summaryRoattion *= Quaternion.AngleAxis(pitchSpeed, Vector3.right);
+        myTransform.rotation *= summaryRoattion;
+    }
   
 }
